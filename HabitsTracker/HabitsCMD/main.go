@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Impact-Calculator-Service/Storage/postgres"
-	pb "Impact-Calculator-Service/genproto/impact-proto"
-	service "Impact-Calculator-Service/Service"
+	"Habits-Tracker/Storage/postgres"
+	pb "Habits-Tracker/genproto/HabitTracker"
+	service "Habits-Tracker/Service"
 	"net"
 	"log"
 	"google.golang.org/grpc"
@@ -20,10 +20,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ic := service.NewCalculatorService(postgres.NewImpactCalculator(db))
+	ht := service.NewHabitsTracker(postgres.NewHabitTracker(db))
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterImpactCalculatorServer(grpcServer,ic)
+	pb.RegisterHabitTrackerServiceServer(grpcServer,ht)
 	grpcServer.Serve(listener)
 
 	log.Printf("Server started on port 50051")

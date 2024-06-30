@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option go_package = "genproto/HabitTraker";
+
+package habittracker;
+
+
+enum Frequency {
+    DAILY = 0;
+    WEEKLY = 1;
+    MONTHLY = 2;
+}
+
+message Habit {
+    string id = 1;
+    int32 user_id = 2;
+    string name = 3;
+    string description = 4;
+    Frequency frequency = 5;
+    string created_at = 6;
+}
+
+message HabitLog {
+    string id = 1;
+    string habit_id = 2;
+    string logged_at = 3;
+    string notes = 4;
+}
+
+message CreateHabitRequest {
+    int32 user_id = 1;
+    string name = 2;
+    string description = 3;
+    Frequency frequency = 4;
+}
+
+message CreateHabitResponse {
+    Habit habit = 1;
+}
+
+message GetHabitsRequest {
+    int32 user_id = 1;
+}
+
+message GetHabitsResponse {
+    repeated Habit habits = 1;
+}
+
+message LogHabitRequest {
+    string habit_id = 1;
+    string notes = 2;
+}
+
+message LogHabitResponse {
+    HabitLog habit_log = 1;
+}
+
+message GetHabitLogsRequest {
+    string habit_id = 1;
+}
+
+message GetHabitLogsResponse {
+    repeated HabitLog habit_logs = 1;
+}
+
+service HabitTrackerService {
+    rpc CreateHabit (CreateHabitRequest) returns (CreateHabitResponse);
+    rpc GetHabits (GetHabitsRequest) returns (GetHabitsResponse);
+    rpc LogHabit (LogHabitRequest) returns (LogHabitResponse);
+    rpc GetHabitLogs (GetHabitLogsRequest) returns (GetHabitLogsResponse);
+}
