@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+option go_package = "genproto/impact-proto";
+
+package impactcalculator;
+
+service ImpactCalculator {
+  rpc CalculateCarbonFootprint (CalculateCarbonFootprintRequest) returns (CalculateCarbonFootprintResponse);
+  rpc GetUserImpact (GetUserImpactRequest) returns (GetUserImpactResponse);
+  rpc GetGroupImpact (GetGroupImpactRequest) returns (GetGroupImpactResponse);
+  rpc GetUserLeaderboard (GetLeaderboardRequest) returns (GetLeaderboardResponse);
+  rpc GetGroupLeaderboard (GetLeaderboardRequest) returns (GetLeaderboardResponse);
+  rpc DonateToCause (DonateToCauseRequest) returns (DonateToCauseResponse);
+  rpc GetDonationCauses (GetDonationCausesRequest) returns (GetDonationCausesResponse);
+}
+
+message CalculateCarbonFootprintRequest {
+  string user_id = 1;
+  string category = 2;
+  double amount = 3;
+  string unit = 4;
+}
+
+message CalculateCarbonFootprintResponse {
+  double carbon_footprint = 1;
+  string unit = 2;
+}
+
+message GetUserImpactRequest {
+  string user_id = 1;
+}
+
+message GetUserImpactResponse {
+  double carbon_footprint = 1;
+  string unit = 2;
+  repeated string actions = 3;
+}
+
+message GetGroupImpactRequest {
+  string group_id = 1;
+}
+
+message GetGroupImpactResponse {
+  double total_carbon_footprint = 1;
+  string unit = 2;
+  map<string, double> user_contributions = 3; 
+}
+
+message GetLeaderboardRequest {
+  int32 limit = 1;
+}
+
+message GetLeaderboardResponse {
+  repeated LeaderboardEntry entries = 1;
+}
+
+message LeaderboardEntry {
+  string id = 1;
+  double carbon_footprint = 2;
+  string unit = 3;
+  string name = 4;
+}
+
+message DonateToCauseRequest {
+  string user_id = 1;
+  string cause_id = 2;
+  double amount = 3;
+}
+
+message DonateToCauseResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message DonationCause {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message GetDonationCausesRequest {}
+
+message GetDonationCausesResponse {
+  repeated DonationCause causes = 1;
+}
