@@ -3,7 +3,11 @@ package main
 import (
 	"Impact-Calculator-Service/Storage/postgres"
 	pb "Impact-Calculator-Service/genproto/impact-proto"
+<<<<<<< HEAD
 	service "Impact-Calculator-Service/Service"
+=======
+	service "Impact-Calculator-Service/Sevice"
+>>>>>>> origin/main
 	"net"
 	"log"
 	"google.golang.org/grpc"
@@ -21,7 +25,11 @@ func main() {
 		panic(err)
 	}
 	ic := service.NewCalculatorService(postgres.NewImpactCalculator(db))
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> origin/main
 	grpcServer := grpc.NewServer()
 	pb.RegisterImpactCalculatorServer(grpcServer,ic)
 	grpcServer.Serve(listener)
