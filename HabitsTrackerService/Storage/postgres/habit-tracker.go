@@ -78,14 +78,14 @@ func (ht *HabitTracker) LogHabit(ctx context.Context, req *pb.LogHabitRequest) (
 }
 
 func (ht *HabitTracker) GetHabitLogs(ctx context.Context, req *pb.GetHabitLogsRequest) (*pb.GetHabitLogsResponse, error) {
-    query := `SELECT id, habit_id, logged_at, notes FROM habit_logs WHERE habit_id = $1 ORDER BY logged_at DESC`
+    query := `SELECT id, habit_id, logged_at, notes FROM habit_logs WHERE id = $1 ORDER BY logged_at DESC`
     rows, err := ht.db.QueryContext(ctx, query, req.HabitId)
     if err != nil {
         log.Printf("Error getting habit logs: %v", err)
         return nil, err
     }
     defer rows.Close()
-
+	fmt.Println(rows)
     var logs []*pb.HabitLog
     for rows.Next() {
         var lg pb.HabitLog
@@ -94,7 +94,9 @@ func (ht *HabitTracker) GetHabitLogs(ctx context.Context, req *pb.GetHabitLogsRe
             return nil, err
         }
         logs = append(logs, &lg)
+		fmt.Println(lg)
     }
+	fmt.Println(logs)
     return &pb.GetHabitLogsResponse{HabitLogs: logs}, nil
 }
 

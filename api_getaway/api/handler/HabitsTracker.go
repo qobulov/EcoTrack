@@ -54,9 +54,6 @@ func (h *Handler) LogHabit(c *gin.Context) {
 		return
 	}
 
-	habitId := c.Param("id")
-	req.HabitId = habitId
-
 	resp, err := h.Habits.LogHabit(c, &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

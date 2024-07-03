@@ -21,7 +21,7 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	router.PUT("/api/habits/:id", handler.UpdateHabit)
 	router.DELETE("/api/habits/:id", handler.DeleteHabit)
 	router.GET("/api/users/:id/habits", handler.GetUserHabits)
-	router.POST("/api/habits/:id/log", handler.LogHabit)
+	router.POST("/api/habits/log", handler.LogHabit)
 	router.GET("/api/habits/:id/logs", handler.GetHabitLogs)
 	router.GET("/api/habits/suggestions", handler.GetHabitSuggestions)
 	return router
