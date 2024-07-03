@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: Tracker.proto
 
-package HabitTraker
+package genproto
 
 import (
 	context "context"
@@ -26,6 +26,10 @@ type HabitTrackerServiceClient interface {
 	GetHabits(ctx context.Context, in *GetHabitsRequest, opts ...grpc.CallOption) (*GetHabitsResponse, error)
 	LogHabit(ctx context.Context, in *LogHabitRequest, opts ...grpc.CallOption) (*LogHabitResponse, error)
 	GetHabitLogs(ctx context.Context, in *GetHabitLogsRequest, opts ...grpc.CallOption) (*GetHabitLogsResponse, error)
+	GetHabitSuggestions(ctx context.Context, in *GetHabitSuggestionsRequest, opts ...grpc.CallOption) (*GetHabitSuggestionsResponse, error)
+	GetUserHabits(ctx context.Context, in *GetUserHabitsRequest, opts ...grpc.CallOption) (*GetUserHabitsResponse, error)
+	UpdateHabit(ctx context.Context, in *UpdateHabitRequest, opts ...grpc.CallOption) (*UpdateHabitResponse, error)
+	DeleteHabit(ctx context.Context, in *DeleteHabitRequest, opts ...grpc.CallOption) (*DeleteHabitResponse, error)
 }
 
 type habitTrackerServiceClient struct {
@@ -72,6 +76,42 @@ func (c *habitTrackerServiceClient) GetHabitLogs(ctx context.Context, in *GetHab
 	return out, nil
 }
 
+func (c *habitTrackerServiceClient) GetHabitSuggestions(ctx context.Context, in *GetHabitSuggestionsRequest, opts ...grpc.CallOption) (*GetHabitSuggestionsResponse, error) {
+	out := new(GetHabitSuggestionsResponse)
+	err := c.cc.Invoke(ctx, "/habittracker.HabitTrackerService/GetHabitSuggestions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *habitTrackerServiceClient) GetUserHabits(ctx context.Context, in *GetUserHabitsRequest, opts ...grpc.CallOption) (*GetUserHabitsResponse, error) {
+	out := new(GetUserHabitsResponse)
+	err := c.cc.Invoke(ctx, "/habittracker.HabitTrackerService/GetUserHabits", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *habitTrackerServiceClient) UpdateHabit(ctx context.Context, in *UpdateHabitRequest, opts ...grpc.CallOption) (*UpdateHabitResponse, error) {
+	out := new(UpdateHabitResponse)
+	err := c.cc.Invoke(ctx, "/habittracker.HabitTrackerService/UpdateHabit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *habitTrackerServiceClient) DeleteHabit(ctx context.Context, in *DeleteHabitRequest, opts ...grpc.CallOption) (*DeleteHabitResponse, error) {
+	out := new(DeleteHabitResponse)
+	err := c.cc.Invoke(ctx, "/habittracker.HabitTrackerService/DeleteHabit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HabitTrackerServiceServer is the server API for HabitTrackerService service.
 // All implementations must embed UnimplementedHabitTrackerServiceServer
 // for forward compatibility
@@ -80,6 +120,10 @@ type HabitTrackerServiceServer interface {
 	GetHabits(context.Context, *GetHabitsRequest) (*GetHabitsResponse, error)
 	LogHabit(context.Context, *LogHabitRequest) (*LogHabitResponse, error)
 	GetHabitLogs(context.Context, *GetHabitLogsRequest) (*GetHabitLogsResponse, error)
+	GetHabitSuggestions(context.Context, *GetHabitSuggestionsRequest) (*GetHabitSuggestionsResponse, error)
+	GetUserHabits(context.Context, *GetUserHabitsRequest) (*GetUserHabitsResponse, error)
+	UpdateHabit(context.Context, *UpdateHabitRequest) (*UpdateHabitResponse, error)
+	DeleteHabit(context.Context, *DeleteHabitRequest) (*DeleteHabitResponse, error)
 	mustEmbedUnimplementedHabitTrackerServiceServer()
 }
 
@@ -98,6 +142,18 @@ func (UnimplementedHabitTrackerServiceServer) LogHabit(context.Context, *LogHabi
 }
 func (UnimplementedHabitTrackerServiceServer) GetHabitLogs(context.Context, *GetHabitLogsRequest) (*GetHabitLogsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHabitLogs not implemented")
+}
+func (UnimplementedHabitTrackerServiceServer) GetHabitSuggestions(context.Context, *GetHabitSuggestionsRequest) (*GetHabitSuggestionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHabitSuggestions not implemented")
+}
+func (UnimplementedHabitTrackerServiceServer) GetUserHabits(context.Context, *GetUserHabitsRequest) (*GetUserHabitsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserHabits not implemented")
+}
+func (UnimplementedHabitTrackerServiceServer) UpdateHabit(context.Context, *UpdateHabitRequest) (*UpdateHabitResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateHabit not implemented")
+}
+func (UnimplementedHabitTrackerServiceServer) DeleteHabit(context.Context, *DeleteHabitRequest) (*DeleteHabitResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteHabit not implemented")
 }
 func (UnimplementedHabitTrackerServiceServer) mustEmbedUnimplementedHabitTrackerServiceServer() {}
 
@@ -184,6 +240,78 @@ func _HabitTrackerService_GetHabitLogs_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HabitTrackerService_GetHabitSuggestions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHabitSuggestionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HabitTrackerServiceServer).GetHabitSuggestions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/habittracker.HabitTrackerService/GetHabitSuggestions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HabitTrackerServiceServer).GetHabitSuggestions(ctx, req.(*GetHabitSuggestionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HabitTrackerService_GetUserHabits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserHabitsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HabitTrackerServiceServer).GetUserHabits(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/habittracker.HabitTrackerService/GetUserHabits",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HabitTrackerServiceServer).GetUserHabits(ctx, req.(*GetUserHabitsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HabitTrackerService_UpdateHabit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateHabitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HabitTrackerServiceServer).UpdateHabit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/habittracker.HabitTrackerService/UpdateHabit",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HabitTrackerServiceServer).UpdateHabit(ctx, req.(*UpdateHabitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HabitTrackerService_DeleteHabit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteHabitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HabitTrackerServiceServer).DeleteHabit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/habittracker.HabitTrackerService/DeleteHabit",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HabitTrackerServiceServer).DeleteHabit(ctx, req.(*DeleteHabitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HabitTrackerService_ServiceDesc is the grpc.ServiceDesc for HabitTrackerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +334,22 @@ var HabitTrackerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetHabitLogs",
 			Handler:    _HabitTrackerService_GetHabitLogs_Handler,
+		},
+		{
+			MethodName: "GetHabitSuggestions",
+			Handler:    _HabitTrackerService_GetHabitSuggestions_Handler,
+		},
+		{
+			MethodName: "GetUserHabits",
+			Handler:    _HabitTrackerService_GetUserHabits_Handler,
+		},
+		{
+			MethodName: "UpdateHabit",
+			Handler:    _HabitTrackerService_UpdateHabit_Handler,
+		},
+		{
+			MethodName: "DeleteHabit",
+			Handler:    _HabitTrackerService_DeleteHabit_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

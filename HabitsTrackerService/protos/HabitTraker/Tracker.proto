@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-option go_package = "genproto/HabitTraker";
+option go_package = "genproto/";
 
 package habittracker;
-
 
 enum Frequency {
     DAILY = 0;
@@ -13,7 +12,7 @@ enum Frequency {
 
 message Habit {
     string id = 1;
-    int32 user_id = 2;
+    string user_id = 2;
     string name = 3;
     string description = 4;
     Frequency frequency = 5;
@@ -28,7 +27,7 @@ message HabitLog {
 }
 
 message CreateHabitRequest {
-    int32 user_id = 1;
+    string user_id = 1;
     string name = 2;
     string description = 3;
     Frequency frequency = 4;
@@ -39,7 +38,7 @@ message CreateHabitResponse {
 }
 
 message GetHabitsRequest {
-    int32 user_id = 1;
+    string user_id = 1;
 }
 
 message GetHabitsResponse {
@@ -63,9 +62,48 @@ message GetHabitLogsResponse {
     repeated HabitLog habit_logs = 1;
 }
 
+message GetHabitSuggestionsRequest {
+    string user_id = 1;
+}
+
+message GetHabitSuggestionsResponse {
+    repeated Habit habits = 1;
+}
+
+message GetUserHabitsRequest {
+    string user_id = 1;
+}
+
+message GetUserHabitsResponse {
+    repeated Habit habits = 1;
+}
+
+message UpdateHabitRequest {
+    string habit_id = 1;
+    string name = 2;
+    string description = 3;
+    Frequency frequency = 4;
+}
+
+message UpdateHabitResponse {
+    Habit habit = 1;
+}
+
+message DeleteHabitRequest {
+    string habit_id = 1;
+}
+
+message DeleteHabitResponse {
+    string message = 1;
+}
+
 service HabitTrackerService {
     rpc CreateHabit (CreateHabitRequest) returns (CreateHabitResponse);
     rpc GetHabits (GetHabitsRequest) returns (GetHabitsResponse);
     rpc LogHabit (LogHabitRequest) returns (LogHabitResponse);
     rpc GetHabitLogs (GetHabitLogsRequest) returns (GetHabitLogsResponse);
+    rpc GetHabitSuggestions (GetHabitSuggestionsRequest) returns (GetHabitSuggestionsResponse);
+    rpc GetUserHabits (GetUserHabitsRequest) returns (GetUserHabitsResponse);
+    rpc UpdateHabit (UpdateHabitRequest) returns (UpdateHabitResponse);
+    rpc DeleteHabit (DeleteHabitRequest) returns (DeleteHabitResponse);
 }

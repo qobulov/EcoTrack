@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"Habits-Tracker/Storage/postgres"
-	pb "Habits-Tracker/genproto/HabitTracker"
+	pb "Habits-Tracker/genproto"
 )
 
 type HabitsTracker struct {
@@ -45,4 +45,36 @@ func (s *HabitsTracker) GetHabitLogs(ctx context.Context, req *pb.GetHabitLogsRe
 		return nil, err
 	}
 	return habitLogs, nil
+}
+
+func (s *HabitsTracker) GetUserHabits(ctx context.Context, req *pb.GetUserHabitsRequest) (*pb.GetUserHabitsResponse, error) {
+	habits, err := s.db.GetUserHabits(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return habits, nil
+}
+
+func (s *HabitsTracker) UpdateHabit(ctx context.Context, req *pb.UpdateHabitRequest) (*pb.UpdateHabitResponse, error) {
+	habit, err := s.db.UpdateHabit(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UpdateHabitResponse{Habit: habit}, nil
+}
+
+func (s *HabitsTracker) GetHabitSuggestions(ctx context.Context, req *pb.GetHabitSuggestionsRequest) (*pb.GetHabitSuggestionsResponse, error) {
+	habits, err := s.db.GetHabitSuggestions(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return habits, nil
+}
+
+func (s *HabitsTracker) DeleteHabit(ctx context.Context, req *pb.DeleteHabitRequest) (*pb.DeleteHabitResponse, error) {
+	mes,err := s.db.DeleteHabit(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteHabitResponse{Message: mes.Message}, nil
 }

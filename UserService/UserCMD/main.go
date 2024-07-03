@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Habits-Tracker/Storage/postgres"
-	pb "Habits-Tracker/genproto/HabitTracker"
-	service "Habits-Tracker/Service"
+	"User-Service/Storage/postgres"
+	pb "User-Service/genproto/user-proto"
+	service "User-Service/Service"
 	"net"
 	"log"
 	"google.golang.org/grpc"
@@ -20,10 +20,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ht := service.NewHabitsTracker(postgres.NewHabitTracker(db))
+	us := service.NewUserService(postgres.NewUser(db))	
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterHabitTrackerServiceServer(grpcServer,ht)
+	pb.RegisterUserServiceServer(grpcServer,us)
 	grpcServer.Serve(listener)
 
 	log.Printf("Server started on port 50051")
