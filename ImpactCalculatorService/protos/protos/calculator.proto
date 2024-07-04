@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+option go_package = "genproto/protos";
+
+package protos;
+
+enum FootprintCategory {
+    TRANSPORT = 0;
+    ENERGY = 1;
+    FOOD = 2;
+    CONSUMPTION = 3;
+}
+
+message CarbonFootprintLog {
+    string id = 1;
+    string user_id = 2;
+    FootprintCategory category = 3;
+    float amount = 4;
+    string unit = 5;
+    string logged_at = 6;
+}
+
+message Donation {
+    string id = 1;
+    string user_id = 2;
+    string cause = 3;
+    float amount = 4;
+    string donated_at = 5;
+}
+
+message CalculateCarbonFootprintRequest {
+    string user_id = 1;
+    FootprintCategory category = 2;
+    float amount = 3;
+    string unit = 4;
+}
+
+message CalculateCarbonFootprintResponse {
+    float carbon_footprint = 1;
+    string unit = 2;
+}
+
+message GetUserImpactRequest {
+    string user_id = 1;
+}
+
+message GetUserImpactResponse {
+    float carbon_footprint = 1;
+    string unit = 2;
+    repeated string actions = 3;
+}
+
+message GetGroupImpactRequest {
+    string group_id = 1;
+}
+
+message GetGroupImpactResponse {
+    float total_carbon_footprint = 1;
+    string unit = 2;
+    map<string, float> user_contributions = 3;
+}
+
+message GetLeaderboardRequest {}
+
+message GetLeaderboardResponse {
+    repeated LeaderboardEntry entries = 1;
+}
+
+message LeaderboardEntry {
+    string id = 1;
+    string name = 2;
+    float carbon_footprint = 3;
+    string unit = 4;
+}
+
+message DonateToCauseRequest {
+    string user_id = 1;
+    string cause_id = 2;
+    float amount = 3;
+}
+
+message DonateToCauseResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message GetDonationCausesRequest {}
+
+message GetDonationCausesResponse {
+    repeated DonationCause causes = 1;
+}
+
+message DonationCause {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message GetUserDonationsRequest {
+    string user_id = 1;
+}
+
+message GetUserDonationsResponse {
+    repeated Donation donations = 1;
+}
+service ImpactCalculatorService {
+    rpc CalculateCarbonFootprint (CalculateCarbonFootprintRequest) returns (CalculateCarbonFootprintResponse);
+    rpc GetUserImpact (GetUserImpactRequest) returns (GetUserImpactResponse);
+    rpc GetGroupImpact (GetGroupImpactRequest) returns (GetGroupImpactResponse);
+    rpc GetUserLeaderboard (GetLeaderboardRequest) returns (GetLeaderboardResponse);
+    rpc GetGroupLeaderboard (GetLeaderboardRequest) returns (GetLeaderboardResponse);
+    rpc DonateToCause (DonateToCauseRequest) returns (DonateToCauseResponse);
+    rpc GetUserDonations (GetUserDonationsRequest) returns (GetUserDonationsResponse);
+    rpc GetDonationCauses (GetDonationCausesRequest) returns (GetDonationCausesResponse);
+}

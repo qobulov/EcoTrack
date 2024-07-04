@@ -31,7 +31,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	pb.RegisterImpactCalculatorServer(grpcServer, ics)
+	pb.RegisterImpactCalculatorServiceServer(grpcServer, ics)
 
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatal(err)

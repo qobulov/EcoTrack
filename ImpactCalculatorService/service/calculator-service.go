@@ -7,7 +7,7 @@ import (
 )
 
 type ImpactCalculatorService struct {
-	pb.UnimplementedImpactCalculatorServer
+	pb.UnimplementedImpactCalculatorServiceServer
 	db *postgres.ImpactCalculator
 }
 

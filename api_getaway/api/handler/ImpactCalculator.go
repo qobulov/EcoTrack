@@ -2,22 +2,20 @@ package handler
 
 import (
 	pb "api-getaway/genproto/protos"
-
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) CreateHabit(c *gin.Context) {
-	req := &pb.CreateHabitRequest{}
-
+func (h *Handler) CalculateCarbonFootprint(c *gin.Context) {
+	req := &pb.CalculateCarbonFootprintRequest{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	resp, err := h.Habits.CreateHabit(c, req)
+	resp, err := h.Impact.CalculateCarbonFootprint(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -27,57 +25,37 @@ func (h *Handler) CreateHabit(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *Handler) GetHabits(c *gin.Context) {
+func (h *Handler) GetUserImpact(c *gin.Context) {
+	req := &pb.GetUserImpactRequest{}
+	if err := c.ShouldBindQuery(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	userID := c.Param("id")
-
-	req := &pb.GetHabitsRequest{
-		UserId: userID,
-	}
-
-	resp, err := h.Habits.GetHabits(c, req)
+	req.UserId = userID
+	resp, err := h.Impact.GetUserImpact(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *Handler) LogHabit(c *gin.Context) {
-	var req pb.LogHabitRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	resp, err := h.Habits.LogHabit(c, &req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, resp)
-}
-
-
-func (h *Handler) GetHabitLogs(c *gin.Context) {
-	req := &pb.GetHabitLogsRequest{}
+func (h *Handler) GetGroupImpact(c *gin.Context) {
+	req := &pb.GetGroupImpactRequest{}
 	if err := c.ShouldBindQuery(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	habitId := c.Param("id")
-	req.HabitId = habitId
-
-	resp, err := h.Habits.GetHabitLogs(c, req)
+	groupID := c.Param("id")
+	req.GroupId = groupID
+	resp, err := h.Impact.GetGroupImpact(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -87,15 +65,15 @@ func (h *Handler) GetHabitLogs(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *Handler) GetHabitSuggestions(c *gin.Context) {
-	req := &pb.GetHabitSuggestionsRequest{}
+func (h *Handler) GetLeaderboardUsers(c *gin.Context) {
+	req := &pb.GetLeaderboardRequest{}
 	if err := c.ShouldBindQuery(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	resp, err := h.Habits.GetHabitSuggestions(c, req)
+	resp, err := h.Impact.GetUserLeaderboard(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -105,18 +83,15 @@ func (h *Handler) GetHabitSuggestions(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *Handler) GetUserHabits(c *gin.Context) {
-	req := &pb.GetUserHabitsRequest{}
+func (h *Handler) GetLeaderboardGroups(c *gin.Context) {
+	req := &pb.GetLeaderboardRequest{}
 	if err := c.ShouldBindQuery(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	userId := c.Param("id")
-	req.UserId = userId
-
-	resp, err := h.Habits.GetUserHabits(c, req)
+	resp, err := h.Impact.GetGroupLeaderboard(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -126,23 +101,16 @@ func (h *Handler) GetUserHabits(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *Handler) UpdateHabit(c *gin.Context) {
-	req := &pb.UpdateHabitRequest{}
+func (h *Handler) CreateDonation(c *gin.Context) {
+	req := &pb.DonateToCauseRequest{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	req.HabitId = c.Param("id")
-	if req.HabitId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "HabitId cannot be empty",
-		})
-		return
-	}
-
-	resp, err := h.Habits.UpdateHabit(c, req)
+	
+	resp, err := h.Impact.DonateToCause(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -152,16 +120,9 @@ func (h *Handler) UpdateHabit(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *Handler) DeleteHabit(c *gin.Context) {
-	req := &pb.DeleteHabitRequest{}
-	if err := c.ShouldBindQuery(req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	req.HabitId = c.Param("id")
-	resp, err := h.Habits.DeleteHabit(c, req)
+func (h *Handler) GetCauses(c *gin.Context) {
+	req := &pb.GetDonationCausesRequest{}
+	resp, err := h.Impact.GetDonationCauses(c, req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

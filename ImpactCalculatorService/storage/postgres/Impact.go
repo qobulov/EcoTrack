@@ -16,6 +16,7 @@ type ImpactCalculator struct {
 func NewImpactCalculator(db *sql.DB) *ImpactCalculator {
 	return &ImpactCalculator{db: db}
 }
+
 // CalculateCarbonFootprint foydalanuvchi uchun Carbon Footprint qayd qiladi
 func (i *ImpactCalculator) CalculateCarbonFootprint(ctx context.Context, request *pb.CalculateCarbonFootprintRequest) (*pb.CalculateCarbonFootprintResponse, error) {
 	query := `INSERT INTO carbon_footprint_logs (user_id, category, amount, unit) VALUES ($1, $2, $3, $4) RETURNING id`
@@ -41,12 +42,12 @@ func (i *ImpactCalculator) GetUserImpact(ctx context.Context, request *pb.GetUse
 	}
 	defer rows.Close()
 
-	var totalCarbonFootprint float64
+	var totalCarbonFootprint float32
 	var unit string
 	var actions []string
 	for rows.Next() {
 		var category string
-		var amount float64
+		var amount float32
 		if err := rows.Scan(&category, &amount, &unit); err != nil {
 			log.Printf("Error scanning row: %v", err)
 			return nil, err
@@ -65,12 +66,13 @@ func (i *ImpactCalculator) GetUserImpact(ctx context.Context, request *pb.GetUse
 // GetGroupImpact guruh uchun umumiy uglerod izini oladi
 func (i *ImpactCalculator) GetGroupImpact(ctx context.Context, request *pb.GetGroupImpactRequest) (*pb.GetGroupImpactResponse, error) {
 	query := `
-	SELECT u.id, SUM(c.amount), c.unit 
+	SELECT u.username, SUM(c.amount), c.unit 
 	FROM carbon_footprint_logs c
 	JOIN users u ON c.user_id = u.id
 	JOIN group_members gm ON u.id = gm.user_id
 	WHERE gm.group_id = $1
-	GROUP BY u.id, c.unit`
+	GROUP BY u.username, c.unit;
+`
 	rows, err := i.db.QueryContext(ctx, query, request.GroupId)
 	if err != nil {
 		log.Printf("Error querying group impact: %v", err)
@@ -78,12 +80,12 @@ func (i *ImpactCalculator) GetGroupImpact(ctx context.Context, request *pb.GetGr
 	}
 	defer rows.Close()
 
-	var totalCarbonFootprint float64
+	var totalCarbonFootprint float32
 	var unit string
-	userContributions := make(map[string]float64)
+	userContributions := make(map[string]float32)
 	for rows.Next() {
 		var userID string
-		var amount float64
+		var amount float32
 		if err := rows.Scan(&userID, &amount, &unit); err != nil {
 			log.Printf("Error scanning row: %v", err)
 			return nil, err
@@ -102,13 +104,13 @@ func (i *ImpactCalculator) GetGroupImpact(ctx context.Context, request *pb.GetGr
 // GetUserLeaderboard foydalanuvchilar uchun uglerod izlari asosida peshqadamlar jadvalini oladi
 func (i *ImpactCalculator) GetUserLeaderboard(ctx context.Context, request *pb.GetLeaderboardRequest) (*pb.GetLeaderboardResponse, error) {
 	query := `
-	SELECT u.id, u.name, SUM(c.amount) AS total_amount, c.unit
+	SELECT u.id, u.username, SUM(c.amount) AS total_amount, c.unit
 	FROM carbon_footprint_logs c
 	JOIN users u ON c.user_id = u.id
-	GROUP BY u.id, u.name, c.unit
-	ORDER BY total_amount DESC
-	LIMIT $1`
-	rows, err := i.db.QueryContext(ctx, query, request.Limit)
+	GROUP BY u.id, u.username, c.unit
+	ORDER BY total_amount DESC;
+`
+	rows, err := i.db.QueryContext(ctx, query)
 	if err != nil {
 		log.Printf("Error querying user leaderboard: %v", err)
 		return nil, err
@@ -138,9 +140,8 @@ func (i *ImpactCalculator) GetGroupLeaderboard(ctx context.Context, request *pb.
 	JOIN group_members gm ON c.user_id = gm.user_id
 	JOIN groups g ON gm.group_id = g.id
 	GROUP BY g.id, g.name, c.unit
-	ORDER BY total_amount DESC
-	LIMIT $1`
-	rows, err := i.db.QueryContext(ctx, query, request.Limit)
+	ORDER BY total_amount DESC`
+	rows, err := i.db.QueryContext(ctx, query)
 	if err != nil {
 		log.Printf("Error querying group leaderboard: %v", err)
 		return nil, err
@@ -199,5 +200,38 @@ func (i *ImpactCalculator) GetDonationCauses(ctx context.Context, request *pb.Ge
 
 	return &pb.GetDonationCausesResponse{
 		Causes: causes,
+	}, nil
+}
+
+func (i *ImpactCalculator) GetUserDonations(ctx context.Context, request *pb.GetUserDonationsRequest) (*pb.GetUserDonationsResponse, error) {
+	query := `SELECT d.cause, u.name AS user_name, d.amount 
+	          FROM donations d
+	          JOIN users u ON d.user_id = u.id
+	          WHERE d.user_id = $1`
+
+	rows, err := i.db.QueryContext(ctx, query, request.UserId)
+	if err != nil {
+		log.Printf("Error querying user donations: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var donations []*pb.Donation
+	for rows.Next() {
+		var donation pb.Donation
+		if err := rows.Scan(&donation.UserId, &donation.Cause, &donation.Amount); err != nil {
+			log.Printf("Error scanning row: %v", err)
+			return nil, err
+		}
+		donations = append(donations, &donation)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error in rows iteration: %v", err)
+		return nil, err
+	}
+
+	return &pb.GetUserDonationsResponse{
+		Donations: donations,
 	}, nil
 }

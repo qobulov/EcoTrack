@@ -1,15 +1,15 @@
 package handler
 
 import (
-	pb "api-getaway/genproto"
+	pb "api-getaway/genproto/protos"
 )
 
 type Handler struct {
 	Habits pb.HabitTrackerServiceClient
-	Impact pb.ImpactCalculatorClient
+	Impact pb.ImpactCalculatorServiceClient
 }
 
-func NewHandler(H pb.HabitTrackerServiceClient, I pb.ImpactCalculatorClient) *Handler {
+func NewHandler(H pb.HabitTrackerServiceClient, I pb.ImpactCalculatorServiceClient) *Handler {
 	return &Handler{
 		Habits: H,
 		Impact: I,
