@@ -13,11 +13,11 @@ service UserService {
 }
 
 message GetUserRequest {
-    int32 user_id = 1;
+    string user_id = 1;
 }
 
 message GetUserResponse {
-    int32 user_id = 1;
+    string user_id = 1;
     string username = 2;
     string email = 3;
     string created_at = 4;
@@ -25,7 +25,7 @@ message GetUserResponse {
 }
 
 message UpdateUserRequest {
-    int32 user_id = 1;
+    string user_id = 1;
     string username = 2;
     string email = 3;
 }
@@ -36,7 +36,7 @@ message UpdateUserResponse {
 }
 
 message DeleteUserRequest {
-    int32 user_id = 1;
+    string user_id = 1;
 }
 
 message DeleteUserResponse {
@@ -45,11 +45,11 @@ message DeleteUserResponse {
 }
 
 message GetUserProfileRequest {
-    int32 user_id = 1;
+    string user_id = 1;
 }
 
 message GetUserProfileResponse {
-    int32 user_id = 1;
+    string user_id = 1;
     string full_name = 2;
     string bio = 3;
     string location = 4;
@@ -57,7 +57,7 @@ message GetUserProfileResponse {
 }
 
 message UpdateUserProfileRequest {
-    int32 user_id = 1;
+    string user_id = 1;
     string full_name = 2;
     string bio = 3;
     string location = 4;

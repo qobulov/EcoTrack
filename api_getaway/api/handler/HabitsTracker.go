@@ -1,7 +1,7 @@
 package handler
 
 import (
-	pb "api-getaway/genproto"
+	pb "api-getaway/genproto/protos"
 
 	"net/http"
 
