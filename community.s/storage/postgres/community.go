@@ -18,12 +18,12 @@ func NewCommunityRepo(db *sql.DB) *Server {
 }
 
 func (s *Server) CreateGroup(req *pb.CreateGroupRequest) (*pb.GroupResponse, error) {
-	var id int
+	var id string
 	err := s.db.QueryRow("INSERT INTO groups (name, description, created_by) VALUES ($1, $2, $3) RETURNING id", req.Name, req.Description, req.CreatedBy).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GroupResponse{Group: &pb.Group{Id: int32(id), Name: req.Name, Description: req.Description, CreatedBy: req.CreatedBy}}, nil
+	return &pb.GroupResponse{Group: &pb.Group{Id: id, Name: req.Name, Description: req.Description, CreatedBy: req.CreatedBy}}, nil
 }
 
 func (s *Server) GetGroup(req *pb.GetGroupRequest) (*pb.GroupResponse, error) {
@@ -61,7 +61,7 @@ func (s *Server) ListGroups(req *pb.ListGroupsRequest) (*pb.ListGroupsResponse, 
 
 	var groups []*pb.Group
 	for rows.Next() {
-		var id int32
+		var id string
 		var name, description string
 		var createdBy int32
 		if err := rows.Scan(&id, &name, &description, &createdBy); err != nil {
@@ -98,16 +98,16 @@ func (s *Server) UpdateGroupMemberRole(req *pb.UpdateGroupMemberRoleRequest) (*p
 }
 
 func (s *Server) CreatePost(req *pb.CreatePostRequest) (*pb.PostResponse, error) {
-	var id int
+	var id string
 	err := s.db.QueryRow("INSERT INTO posts (group_id, user_id, content) VALUES ($1, $2, $3) RETURNING id", req.GroupId, req.UserId, req.Content).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.PostResponse{Post: &pb.Post{Id: int32(id), GroupId: req.GroupId, UserId: req.UserId, Content: req.Content}}, nil
+	return &pb.PostResponse{Post: &pb.Post{Id: id, GroupId: req.GroupId, UserId: req.UserId, Content: req.Content}}, nil
 }
 
 func (s *Server) GetPost(req *pb.GetPostRequest) (*pb.PostResponse, error) {
-	var groupId, userId int32
+	var groupId, userId string
 	var content string
 	err := s.db.QueryRow("SELECT group_id, user_id, content FROM posts WHERE id = $1", req.Id).Scan(&groupId, &userId, &content)
 	if err != nil {
@@ -141,7 +141,7 @@ func (s *Server) ListGroupPosts(req *pb.ListGroupPostsRequest) (*pb.ListPostsRes
 
 	var posts []*pb.Post
 	for rows.Next() {
-		var id, groupId, userId int32
+		var id, groupId, userId string
 		var content, createdAt string
 		if err := rows.Scan(&id, &groupId, &userId, &content, &createdAt); err != nil {
 			return nil, err
@@ -153,12 +153,12 @@ func (s *Server) ListGroupPosts(req *pb.ListGroupPostsRequest) (*pb.ListPostsRes
 }
 
 func (s *Server) CreateComment(req *pb.CreateCommentRequest) (*pb.CommentResponse, error) {
-	var id int
+	var id string
 	err := s.db.QueryRow("INSERT INTO comments (post_id, user_id, content) VALUES ($1, $2, $3) RETURNING id", req.PostId, req.UserId, req.Content).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CommentResponse{Comment: &pb.Comment{Id: int32(id), PostId: req.PostId, UserId: req.UserId, Content: req.Content}}, nil
+	return &pb.CommentResponse{Comment: &pb.Comment{Id: id, PostId: req.PostId, UserId: req.UserId, Content: req.Content}}, nil
 }
 
 func (s *Server) GetPostComments(req *pb.GetPostCommentsRequest) (*pb.ListCommentsResponse, error) {
@@ -170,7 +170,7 @@ func (s *Server) GetPostComments(req *pb.GetPostCommentsRequest) (*pb.ListCommen
 
 	var comments []*pb.Comment
 	for rows.Next() {
-		var id, postId, userId int32
+		var id, postId, userId string
 		var content, createdAt string
 		if err := rows.Scan(&id, &postId, &userId, &content, &createdAt); err != nil {
 			return nil, err

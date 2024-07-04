@@ -4,12 +4,32 @@ option go_package = "genproto/protos";
 
 package protos;
 
+message User {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string created_at = 4;
+    string updated_at = 5;
+}
+
+
 service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
     rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
     rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse) {}
     rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse) {}
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message CreateUserResponse {
+    User user = 1;
 }
 
 message GetUserRequest {

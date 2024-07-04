@@ -53,7 +53,7 @@ func TestGetGroup(t *testing.T) {
 	server := NewCommunityRepo(db)
 	// ctx := context.Background()
 	req := &pb.GetGroupRequest{
-		Id: 1,
+		Id: "1",
 	}
 	rows := sqlmock.NewRows([]string{"name", "description", "created_by"}).
 		AddRow("Test Group", "Testing group creation", 1)

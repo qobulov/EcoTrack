@@ -15,7 +15,8 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	Habits := pb.NewHabitTrackerServiceClient(conn)
 	Impact := pb.NewImpactCalculatorClient(conn)
 	Community := pb.NewCommunityServiceClient(conn)
-	handler := handler.NewHandler(Habits, Impact, Community)
+	User := pb.NewUserServiceClient(conn)
+	handler := handler.NewHandler(Habits, Impact, Community,User)
 
 	//Habits
 	router.POST("/api/habits", handler.CreateHabit)
@@ -28,10 +29,10 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	router.GET("/api/habits/suggestions", handler.GetHabitSuggestions)
 
 	//Community
-	router.POST("/api/habits", handler.CreateGroup)
-	router.GET("/api/habits/:id", handler.GetGroup)
-	router.PUT("/api/habits/:id", handler.UpdateGroup)
-	router.DELETE("/api/habits/:id", handler.DeleteGroup)
+	router.POST("/api/groups", handler.CreateGroup)
+	router.GET("/api/groups/:id", handler.GetGroup)
+	router.PUT("/api/groups/:id", handler.UpdateGroup)
+	router.DELETE("/api/groups/:id", handler.DeleteGroup)
 	router.GET("/api/groups", handler.ListGroups)
 	router.POST("/api/groups/join", handler.JoinGroup)
 	router.POST("/api/groups/leave", handler.LeaveGroup)
@@ -43,5 +44,11 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	router.GET("/api/groups/:group_id/posts", handler.ListGroupPosts)
 	router.POST("/api/comments", handler.CreateComment)
 	router.GET("/api/posts/:post_id/comments", handler.GetPostComments)
+
+	router.GET("/api/user/:id", handler.GetUser)
+	router.PUT("/api/user/:id", handler.UpdateUser)
+	router.DELETE("/api/user/:id", handler.DeleteUser)
+	router.GET("/api/user/:id/profile", handler.GetUserProfile)
+	router.PUT("/api/user/:id/profile", handler.UpdateUserProfile)
 	return router
 }

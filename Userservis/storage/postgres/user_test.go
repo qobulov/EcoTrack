@@ -17,7 +17,7 @@ func TestGetUser(t *testing.T) {
 	defer db.Close()
 
 	repo := NewUserRepo(db)
-	req := &pb.GetUserRequest{UserId: 1}
+	req := &pb.GetUserRequest{UserId: "1"}
 
 	rows := sqlmock.NewRows([]string{"username", "email", "created_at", "updated_at"}).
 		AddRow("testuser", "test@example.com", "2024-01-01", "2024-01-01")
@@ -47,7 +47,7 @@ func TestUpdateUser(t *testing.T) {
 	defer db.Close()
 
 	repo := NewUserRepo(db)
-	req := &pb.UpdateUserRequest{UserId: 1, Username: "newuser", Email: "new@example.com"}
+	req := &pb.UpdateUserRequest{UserId: "1", Username: "newuser", Email: "new@example.com"}
 
 	mock.ExpectExec("UPDATE users SET username = \\$1, email = \\$2 WHERE id = \\$3").
 		WithArgs(req.Username, req.Email, req.UserId).
@@ -71,7 +71,7 @@ func TestDeleteUser(t *testing.T) {
 	defer db.Close()
 
 	repo := NewUserRepo(db)
-	req := &pb.DeleteUserRequest{UserId: 1}
+	req := &pb.DeleteUserRequest{UserId: "1"}
 
 	mock.ExpectExec("DELETE FROM users WHERE id = \\$1").
 		WithArgs(req.UserId).
@@ -95,7 +95,7 @@ func TestGetUserProfile(t *testing.T) {
 	defer db.Close()
 
 	repo := NewUserRepo(db)
-	req := &pb.GetUserProfileRequest{UserId: 1}
+	req := &pb.GetUserProfileRequest{UserId: "1"}
 
 	rows := sqlmock.NewRows([]string{"full_name", "bio", "location", "avatar_url"}).
 		AddRow("Test User", "Bio", "Location", "http://example.com/avatar.jpg")
@@ -126,7 +126,7 @@ func TestUpdateUserProfile(t *testing.T) {
 
 	repo := NewUserRepo(db)
 	req := &pb.UpdateUserProfileRequest{
-		UserId:    1,
+		UserId:    "1",
 		FullName:  "New User",
 		Bio:       "New Bio",
 		Location:  "New Location",
