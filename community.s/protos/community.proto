@@ -1,0 +1,163 @@
+syntax = "proto3";
+
+option go_package = "genproto/protos";
+
+package protos;
+
+service CommunityService {
+    rpc CreateGroup (CreateGroupRequest) returns (GroupResponse);
+    rpc GetGroup (GetGroupRequest) returns (GroupResponse);
+    rpc UpdateGroup (UpdateGroupRequest) returns (GroupResponse);
+    rpc DeleteGroup (DeleteGroupRequest) returns (DeleteGroupResponse);
+    rpc ListGroups (ListGroupsRequest) returns (ListGroupsResponse);
+    rpc JoinGroup (JoinGroupRequest) returns (GroupMemberResponse);
+    rpc LeaveGroup (LeaveGroupRequest) returns (GroupMemberResponse);
+    rpc UpdateGroupMemberRole (UpdateGroupMemberRoleRequest) returns (GroupMemberResponse);
+
+    rpc CreatePost (CreatePostRequest) returns (PostResponse);
+    rpc GetPost (GetPostRequest) returns (PostResponse);
+    rpc UpdatePost (UpdatePostRequest) returns (PostResponse);
+    rpc DeletePost (DeletePostRequest) returns (DeletePostResponse);
+    rpc ListGroupPosts (ListGroupPostsRequest) returns (ListPostsResponse);
+
+    rpc CreateComment (CreateCommentRequest) returns (CommentResponse);
+    rpc GetPostComments (GetPostCommentsRequest) returns (ListCommentsResponse);
+}
+
+message Group {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+    int32 created_by = 4;
+    string created_at = 5;
+}
+
+message GroupMember {
+    int32 group_id = 1;
+    int32 user_id = 2;
+    string role = 3;
+    string joined_at = 4;
+}
+
+message Post {
+    int32 id = 1;
+    int32 group_id = 2;
+    int32 user_id = 3;
+    string content = 4;
+    string created_at = 5;
+}
+
+message Comment {
+    int32 id = 1;
+    int32 post_id = 2;
+    int32 user_id = 3;
+    string content = 4;
+    string created_at = 5;
+}
+
+message CreateGroupRequest {
+    string name = 1;
+    string description = 2;
+    int32 created_by = 3;
+}
+
+message GetGroupRequest {
+    int32 id = 1;
+}
+
+message UpdateGroupRequest {
+    int32 id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message DeleteGroupRequest {
+    int32 id = 1;
+}
+
+message ListGroupsRequest {}
+
+message GroupResponse {
+    Group group = 1;
+}
+
+message DeleteGroupResponse {
+    string message = 1;
+}
+
+message ListGroupsResponse {
+    repeated Group groups = 1;
+}
+
+message JoinGroupRequest {
+    int32 group_id = 1;
+    int32 user_id = 2;
+}
+
+message LeaveGroupRequest {
+    int32 group_id = 1;
+    int32 user_id = 2;
+}
+
+message UpdateGroupMemberRoleRequest {
+    int32 group_id = 1;
+    int32 user_id = 2;
+    string role = 3;
+}
+
+message GroupMemberResponse {
+    GroupMember member = 1;
+}
+
+message CreatePostRequest {
+    int32 group_id = 1;
+    int32 user_id = 2;
+    string content = 3;
+}
+
+message GetPostRequest {
+    int32 id = 1;
+}
+
+message UpdatePostRequest {
+    int32 id = 1;
+    string content = 2;
+}
+
+message DeletePostRequest {
+    int32 id = 1;
+}
+
+message DeletePostResponse {
+    string message = 1;
+}
+
+message ListGroupPostsRequest {
+    int32 group_id = 1;
+}
+
+message ListPostsResponse {
+    repeated Post posts = 1;
+}
+
+message CreateCommentRequest {
+    int32 post_id = 1;
+    int32 user_id = 2;
+    string content = 3;
+}
+
+message GetPostCommentsRequest {
+    int32 post_id = 1;
+}
+
+message ListCommentsResponse {
+    repeated Comment comments = 1;
+}
+
+message PostResponse {
+    Post post = 1;
+}
+
+message CommentResponse {
+    Comment comment = 1;
+}

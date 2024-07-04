@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 
-	pb "api-getaway/genproto"
+	pb "api-getaway/genproto/protos"
 
 	"api-getaway/api/handler"
 )
