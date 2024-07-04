@@ -45,10 +45,20 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	router.POST("/api/comments", handler.CreateComment)
 	router.GET("/api/posts/:post_id/comments", handler.GetPostComments)
 
+	//User
 	router.GET("/api/user/:id", handler.GetUser)
 	router.PUT("/api/user/:id", handler.UpdateUser)
 	router.DELETE("/api/user/:id", handler.DeleteUser)
 	router.GET("/api/user/:id/profile", handler.GetUserProfile)
 	router.PUT("/api/user/:id/profile", handler.UpdateUserProfile)
+
+	//Impact
+	router.GET("/api/users/:id/impact", handler.GetUserImpact)
+	router.GET("/api/groups/:id/impact", handler.GetGroupImpact)
+	router.GET("/api/leaderboard/users", handler.GetLeaderboardUsers)
+	router.GET("/api/leaderboard/groups", handler.GetLeaderboardGroups)
+	router.POST("/api/donations", handler.CreateDonation)
+	router.GET("/api/donations/causes", handler.GetCauses)
+
 	return router
 }
