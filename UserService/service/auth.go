@@ -13,6 +13,10 @@ type AuthService struct {
     Storage *storage.AuthServer
 }
 
+func NewAuthService(storage *storage.AuthServer) *AuthService {
+    return &AuthService{Storage: storage}
+}
+
 func (s *AuthService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
     err := s.Storage.CreateUser(req.Username, req.Email, req.Password)
     if err != nil {

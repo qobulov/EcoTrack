@@ -5,6 +5,7 @@ import (
 	p "EcoTrack/UserServis/genproto/protos"
 	"EcoTrack/UserServis/pkg/db"
 	service "EcoTrack/UserServis/service"
+	
 	storage "EcoTrack/UserServis/storage/postgres"
 
 	"log"
@@ -27,11 +28,15 @@ func main() {
 	defer listener.Close()
 	log.Printf("Server started on port "+config.URL_PORT)
 
+	authStorage := storage.NewAuthRepo(db)
 	userStorage := storage.NewUserRepo(db)
 	us := service.NewUserService(userStorage)
+	as := service.NewAuthService(authStorage)
+
 
 	s := grpc.NewServer()
 	p.RegisterUserServiceServer(s, us)
+	p.RegisterAuthServiceServer(s, as)
 	if err := s.Serve(listener); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
