@@ -1,12 +1,13 @@
 package postgres
 
 import (
-	// "database/sql"
+	"context"
 	"testing"
 
 	pb "EcoTrack/UserServis/genproto/protos"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetUser(t *testing.T) {
@@ -22,21 +23,19 @@ func TestGetUser(t *testing.T) {
 	rows := sqlmock.NewRows([]string{"username", "email", "created_at", "updated_at"}).
 		AddRow("testuser", "test@example.com", "2024-01-01", "2024-01-01")
 
-	mock.ExpectQuery("SELECT username, email, created_at, updated_at FROM users WHERE id = \\$1").
+	mock.ExpectQuery("SELECT username, email, created_at, updated_at FROM users WHERE id = $1").
 		WithArgs(req.UserId).
 		WillReturnRows(rows)
 
-	resp, err := repo.GetUser(req)
+	resp, err := repo.GetUser(context.Background(), req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if resp.Username != "testuser" {
-		t.Errorf("expected username 'testuser', got %v", resp.Username)
-	}
-	if resp.Email != "test@example.com" {
-		t.Errorf("expected email 'test@example.com', got %v", resp.Email)
-	}
+	assert.Equal(t, "testuser", resp.Username)
+	assert.Equal(t, "test@example.com", resp.Email)
+	assert.Equal(t, "2024-01-01", resp.CreatedAt)
+	assert.Equal(t, "2024-01-01", resp.UpdatedAt)
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -49,18 +48,17 @@ func TestUpdateUser(t *testing.T) {
 	repo := NewUserRepo(db)
 	req := &pb.UpdateUserRequest{UserId: "1", Username: "newuser", Email: "new@example.com"}
 
-	mock.ExpectExec("UPDATE users SET username = \\$1, email = \\$2 WHERE id = \\$3").
+	mock.ExpectExec("UPDATE users SET username = $1, email = $2 WHERE id = $3").
 		WithArgs(req.Username, req.Email, req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	resp, err := repo.UpdateUser(req)
+	resp, err := repo.UpdateUser(context.Background(), req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if !resp.Success {
-		t.Errorf("expected success true, got %v", resp.Success)
-	}
+	assert.True(t, resp.Success)
+	assert.Equal(t, "User updated successfully", resp.Message)
 }
 
 func TestDeleteUser(t *testing.T) {
@@ -73,18 +71,17 @@ func TestDeleteUser(t *testing.T) {
 	repo := NewUserRepo(db)
 	req := &pb.DeleteUserRequest{UserId: "1"}
 
-	mock.ExpectExec("DELETE FROM users WHERE id = \\$1").
+	mock.ExpectExec("DELETE FROM users WHERE id = $1").
 		WithArgs(req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	resp, err := repo.DeleteUser(req)
+	resp, err := repo.DeleteUser(context.Background(), req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if !resp.Success {
-		t.Errorf("expected success true, got %v", resp.Success)
-	}
+	assert.True(t, resp.Success)
+	assert.Equal(t, "User deleted successfully", resp.Message)
 }
 
 func TestGetUserProfile(t *testing.T) {
@@ -100,21 +97,19 @@ func TestGetUserProfile(t *testing.T) {
 	rows := sqlmock.NewRows([]string{"full_name", "bio", "location", "avatar_url"}).
 		AddRow("Test User", "Bio", "Location", "http://example.com/avatar.jpg")
 
-	mock.ExpectQuery("SELECT full_name, bio, location, avatar_url FROM user_profiles WHERE user_id = \\$1").
+	mock.ExpectQuery("SELECT full_name, bio, location, avatar_url FROM user_profiles WHERE user_id = $1").
 		WithArgs(req.UserId).
 		WillReturnRows(rows)
 
-	resp, err := repo.GetUserProfile(req)
+	resp, err := repo.GetUserProfile(context.Background(), req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if resp.FullName != "Test User" {
-		t.Errorf("expected full_name 'Test User', got %v", resp.FullName)
-	}
-	if resp.Bio != "Bio" {
-		t.Errorf("expected bio 'Bio', got %v", resp.Bio)
-	}
+	assert.Equal(t, "Test User", resp.FullName)
+	assert.Equal(t, "Bio", resp.Bio)
+	assert.Equal(t, "Location", resp.Location)
+	assert.Equal(t, "http://example.com/avatar.jpg", resp.AvatarUrl)
 }
 
 func TestUpdateUserProfile(t *testing.T) {
@@ -137,12 +132,11 @@ func TestUpdateUserProfile(t *testing.T) {
 		WithArgs(req.FullName, req.Bio, req.Location, req.AvatarUrl, req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	resp, err := repo.UpdateUserProfile(req)
+	resp, err := repo.UpdateUserProfile(context.Background(), req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if !resp.Success {
-		t.Errorf("expected success true, got %v", resp.Success)
-	}
+	assert.True(t, resp.Success)
+	assert.Equal(t, "User profile updated successfully", resp.Message)
 }

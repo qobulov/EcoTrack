@@ -1,6 +1,7 @@
-package db
+package storage
 
 import (
+	"EcoTrack/UserServis/config"
 	"database/sql"
 	"fmt"
 
