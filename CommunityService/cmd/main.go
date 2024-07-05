@@ -1,10 +1,11 @@
 package main
 
 import (
-	"EcoTrack/community/pkg/db"
-	storage "EcoTrack/community/storage/postgres"
-	s "EcoTrack/community/service"
+	"EcoTrack/community/config"
 	p "EcoTrack/community/genproto/protos"
+	"EcoTrack/community/pkg/db"
+	s "EcoTrack/community/service"
+	storage "EcoTrack/community/storage/postgres"
 
 	"log"
 	"net"
@@ -13,14 +14,15 @@ import (
 )
 
 func main() {
+	config := config.Load()
 
-	db, err := db.DB()
+	db, err := db.ConnectDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	listener, err := net.Listen("tcp", ":7070")
+	listener, err := net.Listen("tcp", config.URL_PORT)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,5 +37,5 @@ func main() {
 
 	server.Serve(listener)
 
-	log.Println("server is running on :7070 ...")
+	log.Println("server is running on " + config.URL_PORT)
 }

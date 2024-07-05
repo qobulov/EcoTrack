@@ -1,26 +1,28 @@
 package db
 
 import (
+	"EcoTrack/community/config"
 	"database/sql"
 	"fmt"
-	"log"
+
+	_ "github.com/lib/pq"
 )
 
-func DB() (*sql.DB, error) {
 
-	var psqlUrl = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		"localhost",
-		"5432",
-		"postgres",
-		"dodi",
-		"ecotruck",
-	)
+func ConnectDB() (*sql.DB, error) {
+	config := config.Load()
+	conn := fmt.Sprintf(`host = %s port = %d user = %s dbname = %s password = %s sslmode = disable`,
+		config.DB_HOST, config.DB_PORT, config.DB_USER, config.DB_NAME, config.DB_PASSWORD)
 
-	psqlConn, err := sql.Open("postgres", psqlUrl)
+	db, err := sql.Open("postgres", conn)
 	if err != nil {
-		log.Fatalf("failed to connect database: %s", err)
 		return nil, err
 	}
 
-	return psqlConn, nil
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
