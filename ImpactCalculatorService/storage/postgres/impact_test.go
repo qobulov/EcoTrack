@@ -10,6 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type FootprintCategory int32
+
+const (
+    FootprintCategory_TRANSPORTATION FootprintCategory = 0
+    FootprintCategory_ELECTRICITY     FootprintCategory = 1
+    // ... other categories
+)
+
 func TestCalculateCarbonFootprint(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -19,11 +27,12 @@ func TestCalculateCarbonFootprint(t *testing.T) {
 
 	calculator := NewImpactCalculator(db)
 	req := &pb.CalculateCarbonFootprintRequest{
-		UserId:   "1",
-		Category: "transportation",
-		Amount:   50.0,
-		Unit:     "kg",
-	}
+        UserId:   "1",
+        Category: 6, // Now it should work
+        Amount:   50.0,
+        Unit:     "kg",
+    }
+	
 
 	mock.ExpectExec("INSERT INTO carbon_footprint_logs (user_id, category, amount, unit) VALUES ($1, $2, $3, $4)").
 		WithArgs(req.UserId, req.Category, req.Amount, req.Unit).
@@ -110,7 +119,7 @@ func TestGetUserLeaderboard(t *testing.T) {
 	defer db.Close()
 
 	calculator := NewImpactCalculator(db)
-	req := &pb.GetLeaderboardRequest{Limit: 5}
+	req := &pb.GetLeaderboardRequest{}
 
 	rows := sqlmock.NewRows([]string{"id", "username", "total_amount", "unit"}).
 		AddRow("1", "User1", 50.0, "kg").
@@ -122,7 +131,7 @@ func TestGetUserLeaderboard(t *testing.T) {
 	JOIN users u ON c.user_id = u.id
 	GROUP BY u.id, u.username, c.unit
 	ORDER BY total_amount DESC`).
-		WithArgs(req.Limit).
+		WithArgs().
 		WillReturnRows(rows)
 
 	resp, err := calculator.GetUserLeaderboard(context.Background(), req)
@@ -144,7 +153,7 @@ func TestGetGroupLeaderboard(t *testing.T) {
 	defer db.Close()
 
 	calculator := NewImpactCalculator(db)
-	req := &pb.GetLeaderboardRequest{Limit: 5}
+	req := &pb.GetLeaderboardRequest{}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "total_amount", "unit"}).
 		AddRow("1", "Group1", 100.0, "kg").
@@ -157,7 +166,7 @@ func TestGetGroupLeaderboard(t *testing.T) {
 	JOIN groups g ON gm.group_id = g.id
 	GROUP BY g.id, g.name, c.unit
 	ORDER BY total_amount DESC`).
-		WithArgs(req.Limit).
+		WithArgs().
 		WillReturnRows(rows)
 
 	resp, err := calculator.GetGroupLeaderboard(context.Background(), req)

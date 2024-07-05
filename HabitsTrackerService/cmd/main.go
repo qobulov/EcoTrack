@@ -2,6 +2,7 @@ package main
 
 import (
 	"Habits-Tracker/pkg/db"
+	"Habits-Tracker/config"
 	pb "Habits-Tracker/genproto/protos"
 	"Habits-Tracker/service"
 	"Habits-Tracker/storage/postgres"
@@ -12,13 +13,15 @@ import (
 )
 
 func main() {
+	configr := config.Load()
+
 	dbConn, err := db.ConnectDB()
 	if err != nil {
 		panic(err)
 	}
 	defer dbConn.Close()
 
-	listener, err := net.Listen("tcp", ":50051")
+	listener, err := net.Listen("tcp", configr.URL_PORT)
 	if err != nil {
 		panic(err)
 	}
