@@ -1,23 +1,19 @@
 package db
 
 import (
+	"EcoTrack/community/config"
 	"database/sql"
 	"fmt"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	dbname   = "ecotrack"
-	password = "dodi"
-)
 
 func ConnectDB() (*sql.DB, error) {
-	conn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
-		host, port, user, dbname, password)
+	config := config.Load()
+	conn := fmt.Sprintf(`host = %s port = %d user = %s dbname = %s password = %s sslmode = disable`,
+		config.DB_HOST, config.DB_PORT, config.DB_USER, config.DB_NAME, config.DB_PASSWORD)
+
 	db, err := sql.Open("postgres", conn)
 	if err != nil {
 		return nil, err

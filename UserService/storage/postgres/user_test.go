@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"context"
 	"testing"
 
 	pb "EcoTrack/UserServis/genproto/protos"
@@ -26,7 +27,8 @@ func TestGetUser(t *testing.T) {
 		WithArgs(req.UserId).
 		WillReturnRows(rows)
 
-	resp, err := repo.GetUser(req)
+	ctx := context.Background()
+	resp, err := repo.GetUser(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -51,7 +53,8 @@ func TestUpdateUser(t *testing.T) {
 		WithArgs(req.Username, req.Email, req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	resp, err := repo.UpdateUser(req)
+	ctx := context.Background()
+	resp, err := repo.UpdateUser(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -74,7 +77,8 @@ func TestDeleteUser(t *testing.T) {
 		WithArgs(req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	resp, err := repo.DeleteUser(req)
+	ctx := context.Background()
+	resp, err := repo.DeleteUser(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -100,7 +104,8 @@ func TestGetUserProfile(t *testing.T) {
 		WithArgs(req.UserId).
 		WillReturnRows(rows)
 
-	resp, err := repo.GetUserProfile(req)
+	ctx := context.Background()
+	resp, err := repo.GetUserProfile(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -131,7 +136,8 @@ func TestUpdateUserProfile(t *testing.T) {
 		WithArgs(req.FullName, req.Bio, req.Location, req.AvatarUrl, req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	resp, err := repo.UpdateUserProfile(req)
+	ctx := context.Background()
+	resp, err := repo.UpdateUserProfile(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}

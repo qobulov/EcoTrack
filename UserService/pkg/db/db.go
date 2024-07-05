@@ -1,7 +1,7 @@
 package db
 
 import (
-	"Impact/Calculator/config"
+	"EcoTrack/UserServis/config"
 	"database/sql"
 	"fmt"
 
