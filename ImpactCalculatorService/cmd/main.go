@@ -1,23 +1,27 @@
 package main
 
 import (
-	"Impact/Calculator/pkg/db"
+	"Impact/Calculator/config"
 	pb "Impact/Calculator/genproto/protos"
+	"Impact/Calculator/pkg/db"
 	"Impact/Calculator/service"
 	"Impact/Calculator/storage/postgres"
 	"log"
 	"net"
+
 	"google.golang.org/grpc"
 )
 
 func main() {
+	config := config.Load()
+
 	dbConn, err := db.ConnectDB()
 	if err != nil {
 		panic(err)
 	}
 	defer dbConn.Close()
 
-	listener, err := net.Listen("tcp", ":50051")
+	listener, err := net.Listen("tcp", config.URL_PORT)
 	if err != nil {
 		panic(err)
 	}
