@@ -19,51 +19,59 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 
 	handler := handler.NewHandler(Habits, Impact, Community, User)
 
-	//Habits
-	router.Group("/habits")
-	router.POST("/create", handler.CreateHabit)
-	router.GET("/get/:id", handler.GetHabits)
-	router.PUT("/update/:id", handler.UpdateHabit)
-	router.DELETE("/delete/:id", handler.DeleteHabit)
-	router.POST("/log", handler.LogHabit)
-	router.GET("/logs/:id", handler.GetHabitLogs)
-	router.GET("/suggestions", handler.GetHabitSuggestions)
-	
-	//Community
-	router.Group("/community")
-	router.POST("/groups/create", handler.CreateGroup)
-	router.GET("/get/:id", handler.GetGroup)
-	router.PUT("/update/:id", handler.UpdateGroup)
-	router.DELETE("/delete/:id", handler.DeleteGroup)
-	router.GET("/getall", handler.ListGroups)
-	router.POST("/join", handler.JoinGroup)
-	router.POST("/leave", handler.LeaveGroup)
-	router.PUT("/member/role", handler.UpdateGroupMemberRole)
-	router.POST("/post", handler.CreatePost)
-	router.GET("/post/:id", handler.GetPost)
-	router.PUT("/post/update:id", handler.UpdatePost)
-	router.DELETE("/delete/:id", handler.DeletePost)
-	router.GET("/groups/posts/:id", handler.ListGroupPosts)
-	router.POST("/comments", handler.CreateComment)
-	router.GET("/posts/:id/comments", handler.GetPostComments)
-	
-	//User
-	router.Group("/users")
-	router.GET("/:id/habits", handler.GetUserHabits)
-	router.GET("/:id", handler.GetUser)
-	router.PUT("/update/:id", handler.UpdateUser)
-	router.DELETE("/delete/:id", handler.DeleteUser)
-	router.GET("/profile/:id", handler.GetUserProfile)
-	router.PUT("update/profile/:id", handler.UpdateUserProfile)
-																																																																																																					
-	//Impact
-	router.Group("/impact")
-	router.GET("/users/:id", handler.GetUserImpact)
-	router.GET("/groups/:id/", handler.GetGroupImpact)
-	router.GET("/leaderboard/users", handler.GetLeaderboardUsers)
-	router.GET("/leaderboard/groups", handler.GetLeaderboardGroups)
-	router.POST("/donations", handler.CreateDonation)
-	router.GET("/donations/causes", handler.GetCauses)
+	// Habits
+	habitsGroup := router.Group("/habits")
+	{
+		habitsGroup.POST("/create", handler.CreateHabit)
+		habitsGroup.GET("/get/:id", handler.GetHabits)
+		habitsGroup.PUT("/update/:id", handler.UpdateHabit)
+		habitsGroup.DELETE("/delete/:id", handler.DeleteHabit)
+		habitsGroup.POST("/log", handler.LogHabit)
+		habitsGroup.GET("/logs/:id", handler.GetHabitLogs)
+		habitsGroup.GET("/suggestions", handler.GetHabitSuggestions)
+	}
+
+	// Community
+	communityGroup := router.Group("/community")
+	{
+		communityGroup.POST("/groups/create", handler.CreateGroup)
+		communityGroup.GET("/get/:id", handler.GetGroup)
+		communityGroup.PUT("/update/:id", handler.UpdateGroup)
+		communityGroup.DELETE("/delete/:id/group", handler.DeleteGroup)
+		communityGroup.GET("/getall", handler.ListGroups)
+		communityGroup.POST("/join", handler.JoinGroup)
+		communityGroup.POST("/leave", handler.LeaveGroup)
+		communityGroup.PUT("/member/role", handler.UpdateGroupMemberRole)
+		communityGroup.POST("/post", handler.CreatePost)
+		communityGroup.GET("/post/:id", handler.GetPost)
+		communityGroup.PUT("/post/update/:id", handler.UpdatePost)
+		communityGroup.DELETE("/delete/:id/post", handler.DeletePost)
+		communityGroup.GET("/groups/posts/:id", handler.ListGroupPosts)
+		communityGroup.POST("/comments", handler.CreateComment)
+		communityGroup.GET("/posts/:id/comments", handler.GetPostComments)
+	}
+
+	// User
+	userGroup := router.Group("/users")
+	{
+		userGroup.GET("/:id/habits", handler.GetUserHabits)
+		userGroup.GET("/:id", handler.GetUser)
+		userGroup.PUT("/update/:id", handler.UpdateUser)
+		userGroup.DELETE("/delete/:id", handler.DeleteUser)
+		userGroup.GET("/profile/:id", handler.GetUserProfile)
+		userGroup.PUT("update/profile/:id", handler.UpdateUserProfile)
+	}
+
+	// Impact
+	impactGroup := router.Group("/impact")
+	{
+		impactGroup.GET("/users/:id", handler.GetUserImpact)
+		impactGroup.GET("/groups/:id/", handler.GetGroupImpact)
+		impactGroup.GET("/leaderboard/users", handler.GetLeaderboardUsers)
+		impactGroup.GET("/leaderboard/groups", handler.GetLeaderboardGroups)
+		impactGroup.POST("/donations", handler.CreateDonation)
+		impactGroup.GET("/donations/causes", handler.GetCauses)
+	}
 
 	return router
 }
