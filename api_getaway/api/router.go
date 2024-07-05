@@ -23,6 +23,7 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	habitsGroup := router.Group("/habits")
 	{
 		habitsGroup.POST("/create", handler.CreateHabit)
+		habitsGroup.GET("/user/:id", handler.GetUserHabits)
 		habitsGroup.GET("/get/:id", handler.GetHabits)
 		habitsGroup.PUT("/update/:id", handler.UpdateHabit)
 		habitsGroup.DELETE("/delete/:id", handler.DeleteHabit)
@@ -54,13 +55,12 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	// User
 	userGroup := router.Group("/users")
 	{
-		userGroup.POST("/login", handler.Login)
-		userGroup.GET("/:id/habits", handler.GetUserHabits)
+		userGroup.POST("/login", handler.CreateUser)
 		userGroup.GET("/:id", handler.GetUser)
 		userGroup.PUT("/update/:id", handler.UpdateUser)
 		userGroup.DELETE("/delete/:id", handler.DeleteUser)
 		userGroup.GET("/profile/:id", handler.GetUserProfile)
-		userGroup.PUT("update/profile/:id", handler.UpdateUserProfile)
+		userGroup.PUT("/profile/:id/update", handler.UpdateUserProfile)
 	}
 
 	// Impact

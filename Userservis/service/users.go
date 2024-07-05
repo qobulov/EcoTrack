@@ -1,11 +1,12 @@
 package service
 
 import (
-	storage "EcoTrack/UserServis/storage/postgres"
-	pb "EcoTrack/UserServis/genproto/protos"
 	"context"
 	"fmt"
 	"log"
+
+	pb "EcoTrack/UserServis/genproto/protos"
+	storage "EcoTrack/UserServis/storage/postgres"
 )
 
 type UserService struct {
@@ -17,8 +18,8 @@ func NewUserService(storage *storage.Server) *UserService {
 	return &UserService{Storage: storage}
 }
 
-func(u *UserService) Login(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
-	res, err := u.Storage.Login(req)
+func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	res, err := u.Storage.CreateUser(ctx, req)
 	if err != nil {
 		log.Println("error while creating user: ", err)
 		return nil, err
@@ -28,7 +29,7 @@ func(u *UserService) Login(ctx context.Context, req *pb.CreateUserRequest) (*pb.
 }
 
 func (u *UserService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
-	res, err := u.Storage.GetUser(req)
+	res, err := u.Storage.GetUser(ctx, req)
 	if err != nil {
 		log.Println("error while getting user: ", err)
 		return nil, err
@@ -38,7 +39,7 @@ func (u *UserService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.
 }
 
 func (u *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
-	res, err := u.Storage.UpdateUser(req)
+	res, err := u.Storage.UpdateUser(ctx, req)
 	if err != nil {
 		log.Println("error while updating user: ", err)
 		return nil, err
@@ -48,7 +49,7 @@ func (u *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest)
 }
 
 func (u *UserService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
-	res, err := u.Storage.DeleteUser(req)
+	res, err := u.Storage.DeleteUser(ctx, req)
 	if err != nil {
 		log.Println("error while deleting user: ", err)
 		return nil, err
@@ -58,7 +59,7 @@ func (u *UserService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest)
 }
 
 func (u *UserService) GetUserProfile(ctx context.Context, req *pb.GetUserProfileRequest) (*pb.GetUserProfileResponse, error) {
-	res, err := u.Storage.GetUserProfile(req)
+	res, err := u.Storage.GetUserProfile(ctx, req)
 	if err != nil {
 		log.Println("error while getting user profile: ", err)
 		return nil, err
@@ -68,7 +69,7 @@ func (u *UserService) GetUserProfile(ctx context.Context, req *pb.GetUserProfile
 }
 
 func (u *UserService) UpdateUserProfile(ctx context.Context, req *pb.UpdateUserProfileRequest) (*pb.UpdateUserProfileResponse, error) {
-	res, err := u.Storage.UpdateUserProfile(req)
+	res, err := u.Storage.UpdateUserProfile(ctx, req)
 	if err != nil {
 		log.Println("error while updating user profile: ", err)
 		return nil, err

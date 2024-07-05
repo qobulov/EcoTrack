@@ -1,12 +1,13 @@
 package handler
 
 import (
-	pb "api-getaway/genproto/protos"
 	"net/http"
+
+	pb "api-getaway/genproto/protos"
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Login(c *gin.Context) {
+func (h *Handler) CreateUser(c *gin.Context) {
 	req := &pb.CreateUserRequest{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
