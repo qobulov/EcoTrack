@@ -27,8 +27,8 @@ func TestGetUser(t *testing.T) {
 		WithArgs(req.UserId).
 		WillReturnRows(rows)
 
-		ctx := context.Background()
-	resp, err := repo.GetUser(ctx,req)
+	ctx := context.Background()
+	resp, err := repo.GetUser(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -53,8 +53,8 @@ func TestUpdateUser(t *testing.T) {
 		WithArgs(req.Username, req.Email, req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-		ctx := context.Background()
-	resp, err := repo.UpdateUser(ctx,req)
+	ctx := context.Background()
+	resp, err := repo.UpdateUser(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -77,8 +77,8 @@ func TestDeleteUser(t *testing.T) {
 		WithArgs(req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-		ctx := context.Background()
-	resp, err := repo.DeleteUser(ctx,req)
+	ctx := context.Background()
+	resp, err := repo.DeleteUser(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -104,8 +104,8 @@ func TestGetUserProfile(t *testing.T) {
 		WithArgs(req.UserId).
 		WillReturnRows(rows)
 
-		ctx := context.Background()
-	resp, err := repo.GetUserProfile(ctx,req)
+	ctx := context.Background()
+	resp, err := repo.GetUserProfile(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -136,8 +136,8 @@ func TestUpdateUserProfile(t *testing.T) {
 		WithArgs(req.FullName, req.Bio, req.Location, req.AvatarUrl, req.UserId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-		ctx := context.Background()
-	resp, err := repo.UpdateUserProfile(ctx,req)
+	ctx := context.Background()
+	resp, err := repo.UpdateUserProfile(ctx, req)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
