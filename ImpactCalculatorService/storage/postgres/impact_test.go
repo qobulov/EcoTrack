@@ -10,6 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type FootprintCategory int32
+
+const (
+	FootprintCategory_TRANSPORTATION FootprintCategory = 0
+	FootprintCategory_ELECTRICITY     FootprintCategory = 1
+	// ... other categories
+)
+
 func TestCalculateCarbonFootprint(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -20,7 +28,7 @@ func TestCalculateCarbonFootprint(t *testing.T) {
 	calculator := NewImpactCalculator(db)
 	req := &pb.CalculateCarbonFootprintRequest{
 		UserId:   "1",
-		Category: "transportation",
+		Category: pb.FootprintCategory_TRANSPORTATION, // Now it should work
 		Amount:   50.0,
 		Unit:     "kg",
 	}
