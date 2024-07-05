@@ -27,6 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer listener.Close()
+	log.Println("server is running on " + config.URL_PORT)
 
 	server := grpc.NewServer()
 
@@ -37,5 +38,4 @@ func main() {
 
 	server.Serve(listener)
 
-	log.Println("server is running on " + config.URL_PORT)
 }

@@ -26,7 +26,7 @@ func main() {
 		panic(err)
 	}
 	defer listener.Close() 
-
+	log.Println("Server started on port " + configr.URL_PORT)
 	habitTrackerStorage := postgres.NewHabitTracker(dbConn)
 
 	ht := service.NewHabitsTracker(habitTrackerStorage)

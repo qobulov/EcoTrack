@@ -27,7 +27,7 @@ func main() {
 	}
 	defer listener.Close()
 
-	log.Printf("Server started on port 50051...")
+	log.Printf("Server started on port "+config.URL_PORT)
 
 	impactCalculatorStorage := postgres.NewImpactCalculator(dbConn)
 
