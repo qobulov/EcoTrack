@@ -25,7 +25,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	defer listener.Close()
-	log.Printf("Server started on port 50051...")
+	log.Printf("Server started on port "+config.URL_PORT)
 
 	userStorage := storage.NewUserRepo(db)
 	us := service.NewUserService(userStorage)
