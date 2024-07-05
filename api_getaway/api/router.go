@@ -54,6 +54,7 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	// User
 	userGroup := router.Group("/users")
 	{
+		userGroup.POST("/login", handler.Login)
 		userGroup.GET("/:id/habits", handler.GetUserHabits)
 		userGroup.GET("/:id", handler.GetUser)
 		userGroup.PUT("/update/:id", handler.UpdateUser)

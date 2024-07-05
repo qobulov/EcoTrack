@@ -1,10 +1,10 @@
 package main
 
 import (
-	"EcoTrack/UserServis/pkg/db"
-	storage "EcoTrack/UserServis/storage/postgres"
-	s "EcoTrack/UserServis/service"
 	p "EcoTrack/UserServis/genproto/protos"
+	"EcoTrack/UserServis/pkg/db"
+	service "EcoTrack/UserServis/service"
+	storage "EcoTrack/UserServis/storage/postgres"
 
 	"log"
 	"net"
@@ -13,26 +13,25 @@ import (
 )
 
 func main() {
-	listener, err := net.Listen("tcp", ":7070")
+
+	db, err := db.ConnectDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to connect to db: %v", err)
+	}
+	defer db.Close()
+	listener,err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
 	}
 	defer listener.Close()
+	log.Printf("Server started on port 50051...")
 
-	server := grpc.NewServer()
+	userStorage := storage.NewUserRepo(db)
+	us := service.NewUserService(userStorage)
 
-	db, err := db.DB()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	storage := storage.NewUserRepo(db)
-	service := s.UserService{Storage: *storage}
-
-	p.RegisterUserServiceServer(server, &service)
-
-	log.Println("server is running on :7070 ...")
-	if err := server.Serve(listener); err != nil {
-		log.Fatal(err)
+	s := grpc.NewServer()
+	p.RegisterUserServiceServer(s, us)
+	if err := s.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 }

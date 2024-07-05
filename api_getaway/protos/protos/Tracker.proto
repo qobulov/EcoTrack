@@ -98,12 +98,12 @@ message DeleteHabitResponse {
 }
 
 service HabitTrackerService {
-    rpc CreateHabit (CreateHabitRequest) returns (CreateHabitResponse);
-    rpc GetHabits (GetHabitsRequest) returns (GetHabitsResponse);
-    rpc LogHabit (LogHabitRequest) returns (LogHabitResponse);
-    rpc GetHabitLogs (GetHabitLogsRequest) returns (GetHabitLogsResponse);
-    rpc GetHabitSuggestions (GetHabitSuggestionsRequest) returns (GetHabitSuggestionsResponse);
-    rpc GetUserHabits (GetUserHabitsRequest) returns (GetUserHabitsResponse);
-    rpc UpdateHabit (UpdateHabitRequest) returns (UpdateHabitResponse);
-    rpc DeleteHabit (DeleteHabitRequest) returns (DeleteHabitResponse);
+    rpc CreateHabit(CreateHabitRequest) returns (CreateHabitResponse);
+    rpc GetHabits(GetHabitsRequest) returns (GetHabitsResponse);
+    rpc LogHabit(LogHabitRequest) returns (LogHabitResponse);
+    rpc GetHabitLogs(GetHabitLogsRequest) returns (GetHabitLogsResponse);
+    rpc GetHabitSuggestions(GetHabitSuggestionsRequest) returns (GetHabitSuggestionsResponse);
+    rpc GetUserHabits(GetUserHabitsRequest) returns (GetUserHabitsResponse);
+    rpc UpdateHabit(UpdateHabitRequest) returns (UpdateHabitResponse);
+    rpc DeleteHabit(DeleteHabitRequest) returns (DeleteHabitResponse);
 }

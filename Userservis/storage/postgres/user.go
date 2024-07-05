@@ -2,14 +2,11 @@ package postgres
 
 import (
 	"database/sql"
-
-	pb "EcoTrack/UserServis/genproto/protos" // Protokol paketini Go tiliga ko'chirish
-
+	pb "EcoTrack/UserServis/genproto/protos"
 	_ "github.com/lib/pq"
 )
 
 type Server struct {
-	pb.UnimplementedUserServiceServer
 	db *sql.DB
 }
 
@@ -17,6 +14,14 @@ func NewUserRepo(db *sql.DB) *Server {
 	return &Server{db: db}
 }
 
+func (s *Server) Login(req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	var id string
+	err := s.db.QueryRow("INSERT INTO users (username, email, password_hash) VALUES ($1, $2,$3) RETURNING id", req.Username, req.Email, req.Password).Scan(&id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateUserResponse{User: &pb.User{Id: id, Username: req.Username, Email: req.Email},Message :"User Logged in successfully!"}, nil
+}
 func (s *Server) GetUser(req *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	var username, email, createdAt, updatedAt string
 	err := s.db.QueryRow("SELECT username, email, created_at, updated_at FROM users WHERE id = $1", req.UserId).Scan(&username, &email, &createdAt, &updatedAt)
