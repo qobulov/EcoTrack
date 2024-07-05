@@ -6,20 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) Login(c *gin.Context) {
-	req := &pb.CreateUserRequest{}
-	if err := c.ShouldBindJSON(req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	resp, err := h.User.CreateUser(c, req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusCreated, resp)
-}
-
 func (h *Handler) GetUser(c *gin.Context) {
 	req := &pb.GetUserRequest{}
 	if err := c.ShouldBindQuery(req); err != nil {

@@ -16,8 +16,9 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 	Impact := pb.NewImpactCalculatorServiceClient(conn)
 	Community := pb.NewCommunityServiceClient(conn)
 	User := pb.NewUserServiceClient(conn)
+	AuthService := pb.NewAuthServiceClient(conn)
 
-	handler := handler.NewHandler(Habits, Impact, Community, User)
+	handler := handler.NewHandler(Habits, Impact, Community, User,AuthService)
 
 	// Habits
 	habitsGroup := router.Group("/habits")
@@ -73,13 +74,13 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 		impactGroup.POST("/donations", handler.CreateDonation)
 		impactGroup.GET("/donations/causes", handler.GetCauses)
 	}
-	
+
 	auth := router.Group("/api/auth")
     {
-        auth.POST("/register", register)
-        auth.POST("/login", login)
-        auth.POST("/logout", logout)
-        auth.GET("/refresh-token", refreshToken)
+        auth.POST("/register", handler.Register)
+        auth.POST("/login", handler.Login)
+        auth.POST("/logout", handler.Logout)
+        auth.GET("/refresh/token", handler.RefreshToken)
     }
 
 	return router
