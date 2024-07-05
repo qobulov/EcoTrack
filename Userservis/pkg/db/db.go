@@ -11,8 +11,8 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	dbname   = "postgres"
-	password = "root"
+	dbname   = "ecotrack"
+	password = "dodi"
 )
 
 func ConnectDB() (*sql.DB, error) {

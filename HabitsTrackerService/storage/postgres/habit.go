@@ -78,26 +78,25 @@ func (ht *HabitTracker) LogHabit(ctx context.Context, req *pb.LogHabitRequest) (
 }
 
 func (ht *HabitTracker) GetHabitLogs(ctx context.Context, req *pb.GetHabitLogsRequest) (*pb.GetHabitLogsResponse, error) {
-    query := `SELECT id, habit_id, logged_at, notes FROM habit_logs WHERE id = $1 ORDER BY logged_at DESC`
-    rows, err := ht.db.QueryContext(ctx, query, req.HabitId)
-    if err != nil {
-        log.Printf("Error getting habit logs: %v", err)
-        return nil, err
-    }
-    defer rows.Close()
+	query := `SELECT id, habit_id, logged_at, notes FROM habit_logs WHERE id = $1 ORDER BY logged_at DESC`
+	rows, err := ht.db.QueryContext(ctx, query, req.HabitId)
+	if err != nil {
+		log.Printf("Error getting habit logs: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
 	fmt.Println(rows)
-    var logs []*pb.HabitLog
-    for rows.Next() {
-        var lg pb.HabitLog
-        if err := rows.Scan(&lg.Id, &lg.HabitId, &lg.LoggedAt, &lg.Notes); err != nil {
-            log.Printf("Error scanning habit log: %v", err)
-            return nil, err
-        }
-        logs = append(logs, &lg)
-		// fmt.Println(lg)
-    }
+	var logs []*pb.HabitLog
+	for rows.Next() {
+		var lg pb.HabitLog
+		if err := rows.Scan(&lg.Id, &lg.HabitId, &lg.LoggedAt, &lg.Notes); err != nil {
+			log.Printf("Error scanning habit log: %v", err)
+			return nil, err
+		}
+		logs = append(logs, &lg)
+	}
 	fmt.Println(logs)
-    return &pb.GetHabitLogsResponse{HabitLogs: logs}, nil
+	return &pb.GetHabitLogsResponse{HabitLogs: logs}, nil
 }
 
 func (ht *HabitTracker) DeleteHabit(ctx context.Context, req *pb.DeleteHabitRequest) (*pb.DeleteHabitResponse, error) {
@@ -122,7 +121,6 @@ func (ht *HabitTracker) DeleteHabit(ctx context.Context, req *pb.DeleteHabitRequ
 }
 
 func (ht *HabitTracker) UpdateHabit(ctx context.Context, req *pb.UpdateHabitRequest) (*pb.Habit, error) {
-	// Frequency qiymatini kichik harflarga o'zgartirish
 	frequency := strings.ToLower(req.Frequency.String())
 
 	query := `UPDATE habits SET name = $1, description = $2, frequency = $3 WHERE id = $4 RETURNING id, user_id, name, description, frequency, created_at`
@@ -139,7 +137,6 @@ func (ht *HabitTracker) UpdateHabit(ctx context.Context, req *pb.UpdateHabitRequ
 		return nil, err
 	}
 
-	// Frequency qiymatini to'g'ri enum turiga o'tkazish
 	habitFrequency, ok := pb.Frequency_value[strings.ToUpper(dbFrequency)]
 	if !ok {
 		return nil, fmt.Errorf("invalid frequency value: %s", dbFrequency)
@@ -148,7 +145,6 @@ func (ht *HabitTracker) UpdateHabit(ctx context.Context, req *pb.UpdateHabitRequ
 	habit.Frequency = pb.Frequency(habitFrequency)
 	return &habit, nil
 }
-
 
 func (ht *HabitTracker) GetUserHabits(ctx context.Context, req *pb.GetUserHabitsRequest) (*pb.GetUserHabitsResponse, error) {
 	query := `SELECT id, user_id, name, description, frequency, created_at FROM habits WHERE user_id = $1`
@@ -175,7 +171,6 @@ func (ht *HabitTracker) GetUserHabits(ctx context.Context, req *pb.GetUserHabits
 }
 
 func (ht *HabitTracker) GetHabitSuggestions(ctx context.Context, req *pb.GetHabitSuggestionsRequest) (*pb.GetHabitSuggestionsResponse, error) {
-	// This is a placeholder. In a real application, you might use some algorithm or criteria to generate suggestions.
 	query := `SELECT id, user_id, name, description, frequency, created_at FROM habits ORDER BY created_at DESC LIMIT 10`
 	rows, err := ht.db.QueryContext(ctx, query)
 	if err != nil {

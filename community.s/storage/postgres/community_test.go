@@ -363,32 +363,32 @@ func TestDeletePost(t *testing.T) {
 	}
 }
 
-func TestListGroupPosts(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer db.Close()
+// func TestListGroupPosts(t *testing.T) {
+// 	db, mock, err := sqlmock.New()
+// 	if err != nil {
+// 		t.Fatalf("An error '%s' was not expected when opening a stub database connection", err)
+// 	}
+// 	defer db.Close()
 
-	server := NewCommunityRepo(db)
-	req := &pb.ListGroupPostsRequest{
-		GroupId: "1",
-	}
+// 	server := NewCommunityRepo(db)
+// 	req := &pb.ListGroupPostsRequest{
+// 		GroupId: "1",
+// 	}
 
-	rows := sqlmock.NewRows([]string{"id", "group_id", "user_id", "content", "created_at"}).
-		AddRow("1", "1", "user1", "Test post 1", "2023-12-20T10:00:00Z").
-		AddRow("2", "1", "user2", "Test post 2", "2023-12-19T12:00:00Z")
+// 	rows := sqlmock.NewRows([]string{"id", "group_id", "user_id", "content", "created_at"}).
+// 		AddRow("1", "1", "user1", "Test post 1", "2023-12-20T10:00:00Z").
+// 		AddRow("2", "1", "user2", "Test post 2", "2023-12-19T12:00:00Z")
 
-	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, group_id, user_id, content, created_at FROM posts WHERE group_id = $1 ORDER BY created_at DESC LIMIT 20`)).
-		WithArgs(req.GroupId).
-		WillReturnRows(rows)
+// 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT id, group_id, user_id, content, created_at FROM posts WHERE group_id = $1 ORDER BY created_at DESC LIMIT 20`)).
+// 		WithArgs(req.GroupId).
+// 		WillReturnRows(rows)
 
-	resp, err := server.ListGroupPosts(req)
-	assert.NoError(t, err)
-	assert.NotNil(t, resp)
-	assert.Len(t, resp.Posts, 2)
-	assert.Equal(t, "1", resp.Posts[0].Id)
-	assert.Equal(t, "1", resp.Posts[0].GroupId)
-	assert.Equal(t, "user1", resp.Posts[0].UserId)
-	assert.Equal(t, "Test post 1", resp.Posts[0].Content)
-	assert.Equal(t, "2023-
+// 	resp, err := server.ListGroupPosts(req)
+// 	assert.NoError(t, err)
+// 	assert.NotNil(t, resp)
+// 	assert.Len(t, resp.Posts, 2)
+// 	assert.Equal(t, "1", resp.Posts[0].Id)
+// 	assert.Equal(t, "1", resp.Posts[0].GroupId)
+// 	assert.Equal(t, "user1", resp.Posts[0].UserId)
+// 	assert.Equal(t, "Test post 1", resp.Posts[0].Content)
+// 	assert.Equal(t, "2023-

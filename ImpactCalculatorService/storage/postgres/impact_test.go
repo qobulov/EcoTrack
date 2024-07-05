@@ -20,7 +20,7 @@ func TestCalculateCarbonFootprint(t *testing.T) {
 	calculator := NewImpactCalculator(db)
 	req := &pb.CalculateCarbonFootprintRequest{
 		UserId:   "1",
-		Category: "transportation",
+		// Category: transportation,
 		Amount:   50.0,
 		Unit:     "kg",
 	}
@@ -110,7 +110,7 @@ func TestGetUserLeaderboard(t *testing.T) {
 	defer db.Close()
 
 	calculator := NewImpactCalculator(db)
-	req := &pb.GetLeaderboardRequest{Limit: 5}
+	req := &pb.GetLeaderboardRequest{}
 
 	rows := sqlmock.NewRows([]string{"id", "username", "total_amount", "unit"}).
 		AddRow("1", "User1", 50.0, "kg").
@@ -122,7 +122,6 @@ func TestGetUserLeaderboard(t *testing.T) {
 	JOIN users u ON c.user_id = u.id
 	GROUP BY u.id, u.username, c.unit
 	ORDER BY total_amount DESC`).
-		WithArgs(req.Limit).
 		WillReturnRows(rows)
 
 	resp, err := calculator.GetUserLeaderboard(context.Background(), req)
@@ -144,7 +143,7 @@ func TestGetGroupLeaderboard(t *testing.T) {
 	defer db.Close()
 
 	calculator := NewImpactCalculator(db)
-	req := &pb.GetLeaderboardRequest{Limit: 5}
+	req := &pb.GetLeaderboardRequest{}
 
 	rows := sqlmock.NewRows([]string{"id", "name", "total_amount", "unit"}).
 		AddRow("1", "Group1", 100.0, "kg").
@@ -157,7 +156,6 @@ func TestGetGroupLeaderboard(t *testing.T) {
 	JOIN groups g ON gm.group_id = g.id
 	GROUP BY g.id, g.name, c.unit
 	ORDER BY total_amount DESC`).
-		WithArgs(req.Limit).
 		WillReturnRows(rows)
 
 	resp, err := calculator.GetGroupLeaderboard(context.Background(), req)

@@ -73,6 +73,14 @@ func CreateRouter(conn *grpc.ClientConn) *gin.Engine {
 		impactGroup.POST("/donations", handler.CreateDonation)
 		impactGroup.GET("/donations/causes", handler.GetCauses)
 	}
+	
+	auth := router.Group("/api/auth")
+    {
+        auth.POST("/register", register)
+        auth.POST("/login", login)
+        auth.POST("/logout", logout)
+        auth.GET("/refresh-token", refreshToken)
+    }
 
 	return router
 }
